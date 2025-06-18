@@ -640,10 +640,19 @@ Très commun en ville, non insecte.`
     }
 
     function getImagePath(speciesName) {
-      // Encoder le nom pour gérer les espaces et caractères spéciaux
-      const encodedName = encodeURIComponent(speciesName);
-      // Essayer d'abord .png, puis .jpg si l'image n'existe pas
-      return `images/${encodedName}.png`;
+      // Normaliser le nom pour les fichiers web-friendly
+      const normalizedName = speciesName
+        .toLowerCase()
+        .replace(/\s+/g, '-')          // Espaces -> tirets
+        .replace(/é/g, 'e')            // é -> e
+        .replace(/è/g, 'e')            // è -> e  
+        .replace(/à/g, 'a')            // à -> a
+        .replace(/ç/g, 'c')            // ç -> c
+        .replace(/ô/g, 'o')            // ô -> o
+        .replace(/'/g, '')             // Supprimer apostrophes
+        .replace(/[^a-z0-9\-]/g, '');  // Supprimer autres caractères spéciaux
+      
+      return `images/${normalizedName}.png`;
     }
 
     // === DÉMARRAGE DU JEU ===
@@ -713,7 +722,17 @@ Très commun en ville, non insecte.`
         img.alt = item;
         img.onerror = function() {
           // Si .png ne marche pas, essayer .jpg
-          const jpgPath = `images/${encodeURIComponent(item)}.jpg`;
+          const normalizedName = item
+            .toLowerCase()
+            .replace(/\s+/g, '-')
+            .replace(/é/g, 'e')
+            .replace(/è/g, 'e')
+            .replace(/à/g, 'a')
+            .replace(/ç/g, 'c')
+            .replace(/ô/g, 'o')
+            .replace(/'/g, '')
+            .replace(/[^a-z0-9\-]/g, '');
+          const jpgPath = `images/${normalizedName}.jpg`;
           if (this.src !== jpgPath) {
             this.src = jpgPath;
           } else {
@@ -750,7 +769,7 @@ Très commun en ville, non insecte.`
       });
       
       // Afficher les informations sur l'espèce
-      const detailImg = `<img src="${getImagePath(item)}" alt="${item}" onerror="this.onerror=null; this.src='images/${encodeURIComponent(item)}.jpg'; if(this.src.includes('.jpg') && this.complete && this.naturalWidth === 0) this.style.display='none';">`;
+      const detailImg = `<img src="${getImagePath(item)}" alt="${item}">`;
       infoDiv.innerHTML = detailImg + definitions[item];
       
       if (item === intrus) {
