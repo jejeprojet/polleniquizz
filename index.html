@@ -193,10 +193,13 @@
       font-size: clamp(0.6rem, 1.8vw, 0.75rem);
       font-weight: 600;
       color: #2c3e50;
-      margin-top: clamp(2px, 0.5vh, 5px);
       text-align: center;
       line-height: 1.1;
       text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+      padding: 2px 4px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 8px;
+      margin: 2px;
     }
 
     /* Messages */
@@ -720,6 +723,7 @@ Très commun en ville, non insecte.`
         imgContainer.style.display = 'flex';
         imgContainer.style.alignItems = 'center';
         imgContainer.style.justifyContent = 'center';
+        imgContainer.style.height = '70%'; // Limiter la hauteur pour laisser place au nom
         
         // Image
         const img = document.createElement('img');
@@ -751,6 +755,10 @@ Très commun en ville, non insecte.`
         const nameDiv = document.createElement('div');
         nameDiv.className = 'item-name';
         nameDiv.textContent = item;
+        nameDiv.style.height = '30%'; // Hauteur fixe pour le nom
+        nameDiv.style.display = 'flex';
+        nameDiv.style.alignItems = 'center';
+        nameDiv.style.justifyContent = 'center';
         
         div.appendChild(imgContainer);
         div.appendChild(nameDiv);
