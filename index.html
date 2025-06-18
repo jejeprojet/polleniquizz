@@ -260,11 +260,16 @@
       width: 100%;
       max-width: clamp(120px, 30vw, 200px);
       border-radius: 10px;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       display: block;
       margin-left: auto;
       margin-right: auto;
       box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .info-text {
+      color: #2c3e50;
+      font-weight: 500;
     }
 
     /* Messages de succès/erreur */
@@ -770,7 +775,8 @@ Très commun en ville, non insecte.`
       
       // Afficher les informations sur l'espèce
       const detailImg = `<img src="${getImagePath(item)}" alt="${item}">`;
-      infoDiv.innerHTML = detailImg + definitions[item];
+      const textContent = `<div class="info-text">${definitions[item]}</div>`;
+      infoDiv.innerHTML = detailImg + textContent;
       
       if (item === intrus) {
         // Bonne réponse !
