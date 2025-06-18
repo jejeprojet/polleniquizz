@@ -652,7 +652,7 @@ Très commun en ville, non insecte.`
         .replace(/'/g, '')             // Supprimer apostrophes
         .replace(/[^a-z0-9\-]/g, '');  // Supprimer autres caractères spéciaux
       
-      return `images/${normalizedName}.png`;
+      return `images/${normalizedName}.jpg`;
     }
 
     // === DÉMARRAGE DU JEU ===
@@ -721,7 +721,7 @@ Très commun en ville, non insecte.`
         img.src = getImagePath(item);
         img.alt = item;
         img.onerror = function() {
-          // Si .png ne marche pas, essayer .jpg
+          // Si .jpg ne marche pas, essayer .png
           const normalizedName = item
             .toLowerCase()
             .replace(/\s+/g, '-')
@@ -732,9 +732,9 @@ Très commun en ville, non insecte.`
             .replace(/ô/g, 'o')
             .replace(/'/g, '')
             .replace(/[^a-z0-9\-]/g, '');
-          const jpgPath = `images/${normalizedName}.jpg`;
-          if (this.src !== jpgPath) {
-            this.src = jpgPath;
+          const pngPath = `images/${normalizedName}.png`;
+          if (this.src !== pngPath) {
+            this.src = pngPath;
           } else {
             // Si aucun format ne marche, afficher le placeholder
             imgContainer.innerHTML = `<div style="text-align:center; font-size:0.8em; color:#666;">📷<br>Image manquante</div>`;
