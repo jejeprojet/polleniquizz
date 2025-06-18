@@ -2,909 +2,178 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Jeu : Trouve l'intrus - Les Héros Invisibles</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
     body {
-      font-family: 'Savate', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
-      background-image: url('fond.png');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
+      padding: 20px;
+      background: url('/mnt/data/A_photograph_captures_a_sunlit_meadow_in_full_bloo.png') center/cover no-repeat,
+                  linear-gradient(to top, #80c241 0%, #dff5e5 50%, #a3e3f5 100%);
       color: #2c3e50;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
     }
-
-    /* Overlay pour améliorer la lisibilité */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(1px);
-      z-index: -1;
-    }
-
-    /* Container principal avec scroll interne si nécessaire */
-    .container {
-      max-width: 100vw;
-      height: 100vh;
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    /* Titre principal */
-    h1 {
-      color: #2d5a27;
-      font-size: clamp(1.2rem, 3.5vw, 2rem);
-      margin-bottom: 5px;
-      text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
-      font-weight: 700;
-    }
-
-    .subtitle {
-      color: #2d5a27;
-      font-size: clamp(0.75rem, 2vw, 0.9rem);
-      margin-bottom: 15px;
-      font-weight: 500;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-    }
-
-    /* Boutons de niveau */
-    #level-buttons {
-      margin: 10px 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
-    }
-
+    h1 { color: #27ae60; }
+    #level-buttons { margin: 20px 0; }
     #level-buttons button {
-      padding: clamp(8px, 2vh, 12px) clamp(12px, 3vw, 20px);
-      background: linear-gradient(45deg, #4CAF50, #66BB6A);
-      border: 2px solid #388E3C;
+      margin: 5px;
+      padding: 12px 20px;
+      background-color: #27ae60;
+      border: none;
       color: #fff;
-      border-radius: 20px;
+      border-radius: 8px;
       cursor: pointer;
-      font-size: clamp(0.7rem, 2vw, 0.9rem);
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 3px 10px rgba(76, 175, 80, 0.4);
-      min-width: clamp(100px, 25vw, 140px);
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      font-size: 1em;
+      transition: background-color 0.2s;
     }
-
-    #level-buttons button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(76, 175, 80, 0.6);
-      background: linear-gradient(45deg, #66BB6A, #4CAF50);
-    }
-
-    /* Score */
-    .score {
-      font-size: clamp(0.9rem, 2.5vw, 1.2rem);
-      margin: 8px 0;
-      color: #2d5a27;
-      font-weight: 700;
-      background: rgba(255,255,255,0.8);
-      backdrop-filter: blur(5px);
-      border-radius: 15px;
-      padding: clamp(6px, 1.5vh, 10px) clamp(12px, 3vw, 16px);
-      display: inline-block;
-      border: 2px solid #4CAF50;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-    }
-
-    /* Zone de jeu - taille adaptative */
-    .game-area {
-      display: grid;
-      gap: clamp(6px, 1.5vw, 12px);
-      margin: 10px auto;
-      padding: 0 5px;
-      flex: 1;
-      align-content: start;
-      max-width: 100%;
-    }
-
-    /* Grilles responsive selon le nombre d'éléments */
-    .game-area.choices-4 {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: clamp(280px, 60vw, 400px);
-    }
-
-    .game-area.choices-6 {
-      grid-template-columns: repeat(3, 1fr);
-      max-width: clamp(360px, 80vw, 600px);
-    }
-
-    .game-area.choices-8 {
-      grid-template-columns: repeat(4, 1fr);
-      max-width: clamp(400px, 90vw, 800px);
-    }
-
-    /* Cartes des espèces */
+    #level-buttons button:hover { background-color: #1e884a; }
+    .score { font-size: 1.4em; margin-top: 12px; }
+    .game-area { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; margin-top: 25px; }
     .item {
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(8px);
-      border: 2px solid #4CAF50;
-      border-radius: 15px;
-      height: clamp(110px, 18vh, 150px);
+      background-color: rgba(255,255,255,0.8);
+      border: 2px solid #27ae60;
+      border-radius: 12px;
+      width: 140px;
+      height: 140px;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      padding: clamp(4px, 1vh, 8px);
-      position: relative;
-      overflow: hidden;
+      transition: transform 0.2s, background-color 0.2s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 5px;
+      box-sizing: border-box;
     }
-
-    .item::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      transition: left 0.5s;
-    }
-
-    .item:hover::before {
-      left: 100%;
-    }
-
-    .item:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      border-color: #2E7D32;
-    }
-
-    .item img {
-      max-width: 85%;
-      max-height: 65%;
-      object-fit: cover;
-      border-radius: 8px;
-      transition: transform 0.3s ease;
-    }
-
-    .item:hover img {
-      transform: scale(1.05);
-    }
-
-    .item-name {
-      font-size: clamp(0.6rem, 1.8vw, 0.75rem);
-      font-weight: 600;
-      color: #2c3e50;
-      text-align: center;
-      line-height: 1.1;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-      padding: 2px 4px;
-      background: rgba(255,255,255,0.8);
-      border-radius: 8px;
-      margin: 2px;
-    }
-
-    /* Messages */
-    .message {
-      margin: 8px auto;
-      font-weight: 600;
-      font-size: clamp(0.8rem, 2.2vw, 1rem);
-      padding: clamp(6px, 1.5vh, 10px) clamp(10px, 2.5vw, 15px);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(5px);
-      border: 2px solid #4CAF50;
-      color: #2d5a27;
-      max-width: 90%;
-      text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-    }
-
-    /* Bouton suivant */
-    .next-button {
-      margin: 10px auto;
-      padding: clamp(8px, 2vh, 12px) clamp(16px, 4vw, 24px);
-      background: linear-gradient(45deg, #FF9800, #FF7043);
-      border: 2px solid #E65100;
-      color: #fff;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: clamp(0.8rem, 2.2vw, 1rem);
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-      display: none;
-      font-family: inherit;
-    }
-
-    .next-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(255, 152, 0, 0.6);
-      background: linear-gradient(45deg, #FF7043, #FF9800);
-    }
-
-    /* Zone d'informations - compacte */
+    .item:hover { transform: scale(1.05); background-color: rgba(255,255,255,1); }
+    .item img { max-width: 100%; max-height: 100%; }
+    .message { margin-top: 22px; font-weight: bold; font-size: 1.2em; }
     .info {
-      margin: 8px auto 5px;
-      font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+      margin-top: 14px;
+      font-size: 0.95em;
       text-align: left;
-      padding: clamp(8px, 2vh, 12px);
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(8px);
-      border: 2px solid #4CAF50;
-      border-radius: 15px;
-      max-width: 95%;
-      line-height: 1.3;
+      padding: 18px;
+      background-color: rgba(255,255,255,0.9);
+      border: 1px solid #27ae60;
+      border-radius: 8px;
+      max-width: 680px;
+      margin: 14px auto;
+      line-height: 1.4;
       white-space: pre-line;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      max-height: 25vh;
-      overflow-y: auto;
-    }
-
-    .info img {
-      width: 100%;
-      max-width: clamp(120px, 30vw, 200px);
-      border-radius: 10px;
-      margin-bottom: 12px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
-
-    .info-text {
-      color: #2c3e50;
-      font-weight: 500;
-    }
-
-    /* Messages de succès/erreur */
-    .message.success {
-      background: linear-gradient(45deg, #4CAF50, #66BB6A);
-      color: white;
-      border-color: #2E7D32;
-      animation: pulse 0.6s ease;
-    }
-
-    .message.error {
-      background: linear-gradient(45deg, #F44336, #EF5350);
-      color: white;
-      border-color: #C62828;
-      animation: shake 0.6s ease;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-3px); }
-      75% { transform: translateX(3px); }
-    }
-
-    /* Responsive spécifique mobile */
-    @media (max-width: 768px) {
-      .container {
-        padding: 5px;
-      }
-      
-      .game-area.choices-6 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .game-area.choices-8 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 480px) {
-      .game-area.choices-8 {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      #level-buttons {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      #level-buttons button {
-        width: 90%;
-        max-width: 250px;
-      }
-    }
-
-    /* Très petit écran */
-    @media (max-height: 600px) {
-      h1 {
-        font-size: clamp(1rem, 3vw, 1.5rem);
-        margin-bottom: 2px;
-      }
-      
-      .subtitle {
-        font-size: clamp(0.65rem, 1.8vw, 0.8rem);
-        margin-bottom: 8px;
-      }
-      
-      .info {
-        max-height: 20vh;
-      }
-    }
-
-    /* Animations d'entrée */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .item {
-      animation: fadeInUp 0.4s ease forwards;
-    }
-
-    .item:nth-child(2) { animation-delay: 0.05s; }
-    .item:nth-child(3) { animation-delay: 0.1s; }
-    .item:nth-child(4) { animation-delay: 0.15s; }
-    .item:nth-child(5) { animation-delay: 0.2s; }
-    .item:nth-child(6) { animation-delay: 0.25s; }
-    .item:nth-child(7) { animation-delay: 0.3s; }
-    .item:nth-child(8) { animation-delay: 0.35s; }
-
-    /* Amélioration du contraste pour l'accessibilité */
-    @media (prefers-reduced-motion: reduce) {
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* Masquer la scrollbar mais garder la fonctionnalité */
-    .container::-webkit-scrollbar {
-      width: 0px;
-      background: transparent;
-    }
-
-    .info::-webkit-scrollbar {
-      width: 3px;
-    }
-
-    .info::-webkit-scrollbar-track {
-      background: rgba(255,255,255,0.3);
-      border-radius: 3px;
-    }
-
-    .info::-webkit-scrollbar-thumb {
-      background: #4CAF50;
-      border-radius: 3px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🌿 Trouve l'intrus : Les Héros Invisibles 🌿</h1>
-    <p class="subtitle">Le but ? Démasquer l'espèce en danger pour mieux la protéger !</p>
-    
-    <div id="level-buttons">
-      <button onclick="startGame('facile')">🟢 Facile (4 choix)</button>
-      <button onclick="startGame('moyen')">🟡 Moyen (6 choix)</button>
-      <button onclick="startGame('difficile')">🔴 Difficile (8 choix)</button>
-    </div>
-    
-    <div class="score" id="scoreDisplay" style="display:none;">Score : 0</div>
-    <div class="game-area" id="gameArea"></div>
-    <div class="message" id="message"></div>
-    <button class="next-button" id="nextButton" onclick="nextRound()">Question suivante ➡️</button>
-    <div class="info" id="info"></div>
+  <h1>⭐ Trouve l'intrus : Les Héros Invisibles ⭐</h1>
+  <p>Le but ? Démasquer l'espèce menacée parmi les créatures !</p>
+  <div id="level-buttons">
+    <button onclick="startGame('facile')">Facile</button>
+    <button onclick="startGame('moyen')">Moyen</button>
+    <button onclick="startGame('difficile')">Difficile</button>
   </div>
-
+  <div class="score" id="scoreDisplay" style="display:none;">Score : 0</div>
+  <div class="game-area" id="gameArea"></div>
+  <div class="message" id="message"></div>
+  <div class="info" id="info"></div>
   <script>
-    // === LISTES DES ESPÈCES ===
-    
-    // 🦸 Intrus (espèces menacées à protéger)
-    const endangeredSpecies = [
-      "Mélibée",
-      "Vanesse des pariétaires", 
-      "Agrion bleuissant",
-      "Cordulie splendide",
-      "Serratella mesoleuca",
-      "Halictus carinthiacus",
-      "Bourdon velouté",
-      "Criquet de la Crau",
-      "Phasme du palmiste rouge",
-      "Dendrobias maxillosus"
-    ];
-
-    // 🐞 Décoys (espèces non menacées)
-    const commonSpecies = [
-      "Chauve-souris frugivore",
-      "Colibri",
-      "Mouche domestique",
-      "Fourmi noire",
-      "Papillon commun",
-      "Abeille domestique",
-      "Sauterelle verte",
-      "Scarabée commun",
-      "Coccinelle à sept point",
-      "Termite des forêts",
-      "Grillon champêtre",
-      "Larve de coccinelle",
-      "Cicadelle",
-      "Lucane cerf volant",
-      "Punaise verte",
-      "Mite des vêtements",
-      "Perce-oreille",
-      "Loup",
-      "Renard",
-      "Chat",
-      "Chien",
-      "Pigeon"
-    ];
-
-    // === DÉFINITIONS ET GESTES DE PROTECTION ===
     const definitions = {
-      // Espèces menacées
-      "Mélibée": `🦋 **Mélibée**
-1. Papillon rare des prairies humides, reconnaissable à ses ailes oranges tachetées de noir.
-2. Pollinisateur spécialisé des fleurs de prairie, indispensable à la biodiversité montagnarde.
-3. Menacé par l'assèchement des zones humides et l'agriculture intensive.
-**Gestes** : Préserve les prairies fleuries, évite les pesticides, crée des corridors verts.`,
-
-      "Vanesse des pariétaires": `🦋 **Vanesse des pariétaires**
-1. Papillon aux ailes découpées, dépendant exclusivement de la pariétaire officinale.
-2. Exemple parfait de coévolution : chenille-plante hôte indissociables.
-3. Menacée par le nettoyage urbain et l'usage d'herbicides.
-**Gestes** : Laisse pousser la pariétaire sur tes murs, évite les désherbants chimiques.`,
-
-      "Agrion bleuissant": `💧 **Agrion bleuissant**
-1. Petite libellule bleue vivant près des cours d'eau clairs et oxygénés.
-2. Prédateur de moustiques efficace, indicateur de qualité des milieux aquatiques.
-3. Menacé par la pollution de l'eau et l'artificialisation des berges.
-**Gestes** : Protège les ruisseaux, évite les produits chimiques près de l'eau.`,
-
-      "Cordulie splendide": `✨ **Cordulie splendide**
-1. Libellule métallique des mares temporaires méditerranéennes.
-2. Vol spectaculaire et chasse aérienne remarquable contre les insectes nuisibles.
-3. Menacée par la disparition des zones humides temporaires.
-**Gestes** : Crée des mares naturelles, respecte les flaques temporaires.`,
-
-      "Serratella mesoleuca": `💦 **Serratella mesoleuca**
-1. Éphémère aux larves aquatiques, vie adulte de quelques heures seulement.
-2. Maillon essentiel de la chaîne alimentaire des rivières.
-3. Menacée par la pollution et la modification des cours d'eau.
-**Gestes** : Protège la végétation des berges, évite les rejets polluants.`,
-
-      "Halictus carinthiacus": `🐝 **Halictus carinthiacus**
-1. Abeille sauvage solitaire, excellente pollinisatrice des fleurs alpines.
-2. Creuse ses nids dans le sol, plus efficace que l'abeille domestique sur certaines fleurs.
-3. Menacée par l'urbanisation et le piétinement des sols.
-**Gestes** : Préserve les sols nus, plante des fleurs locales, évite le bêchage.`,
-
-      "Bourdon velouté": `🐝 **Bourdon velouté**
-1. Bourdon au pelage dense, spécialisé dans la pollinisation par vibration.
-2. Pollinisateur irremplaçable des tomates et autres solanacées.
-3. Menacé par les pesticides et la raréfaction des fleurs sauvages.
-**Gestes** : Plante des fleurs mellifères, bannis les insecticides, crée des abris.`,
-
-      "Criquet de la Crau": `🦗 **Criquet de la Crau**
-1. Criquet endémique de la plaine de la Crau, habitat unique au monde.
-2. Indicateur de la santé des écosystèmes de coussouls (pelouses sèches).
-3. Menacé par l'urbanisation et l'agriculture intensive.
-**Gestes** : Soutiens la protection des espaces naturels, respecte les pelouses sèches.`,
-
-      "Phasme du palmiste rouge": `🌿 **Phasme du palmiste rouge**
-1. Insecte-bâton tropical, maître du camouflage dans les palmiers.
-2. Herbivore spécialisé, participant à l'équilibre des forêts tropicales.
-3. Menacé par la déforestation et les espèces invasives.
-**Gestes** : Soutiens la protection des forêts tropicales, choisis des produits durables.`,
-
-      "Dendrobias maxillosus": `🪲 **Dendrobias maxillosus**
-1. Coléoptère saproxylique, décomposeur de bois mort essentiel.
-2. Indicateur de la qualité des vieilles forêts, recycleur naturel.
-3. Menacé par l'exploitation forestière intensive et le nettoyage des forêts.
-**Gestes** : Laisse du bois mort en forêt, soutiens la gestion durable des forêts.`,
-
-      // Espèces communes (descriptions plus courtes)
-      "Chauve-souris frugivore": `🦇 **Chauve-souris frugivore**
-Mammifère volant, disperse les graines des fruits.
-Population stable, adaptable aux environnements variés.`,
-
-      "Colibri": `🐦 **Colibri**
-Oiseau-mouche, pollinisateur de fleurs tubulaires.
-Espèce commune dans son habitat naturel.`,
-
-      "Mouche domestique": `🪰 **Mouche domestique**
-Insecte ubiquiste, recycle la matière organique.
-Très commune, non menacée.`,
-
-      "Fourmi noire": `🐜 **Fourmi noire**
-Insecte social, aère le sol et disperse les graines.
-Population abondante et stable.`,
-
-      "Papillon commun": `🦋 **Papillon commun**
-Piéride blanche, pollinisateur occasionnel des jardins.
-Très répandu, population en bonne santé.`,
-
-      "Abeille domestique": `🐝 **Abeille domestique**
-Hyménoptère élevé par l'homme, pollinisateur efficace.
-Gérée par l'apiculture, non sauvage.`,
-
-      "Sauterelle verte": `🦗 **Sauterelle verte**
-Orthoptère herbivore des prairies et jardins.
-Commune partout, très adaptable.`,
-
-      "Scarabée commun": `🪲 **Scarabée commun**
-Coléoptère décomposeur, recycle la matière organique.
-Population stable, pas de menace particulière.`,
-
-      "Coccinelle à sept point": `🐞 **Coccinelle à sept point**
-Prédateur naturel des pucerons, auxiliaire du jardinier.
-Très commune, non menacée.`,
-
-      "Termite des forêts": `🐜 **Termite des forêts**
-Insecte social décomposeur, recycle le bois mort.
-Population stable dans les forêts.`,
-
-      "Grillon champêtre": `🦗 **Grillon champêtre**
-Orthoptère chanteur des prairies et jardins.
-Très commun, non menacé.`,
-
-      "Larve de coccinelle": `🐛 **Larve de coccinelle**
-Stade juvénile de coccinelle, grand prédateur de pucerons.
-Abondante, non menacée.`,
-
-      "Cicadelle": `🦗 **Cicadelle**
-Petit insecte sauteur se nourrissant de sève.
-Très commune, non menacée.`,
-
-      "Lucane cerf volant": `🪲 **Lucane cerf volant**
-Grand coléoptère aux mandibules impressionnantes.
-Relativement commun, non menacé globalement.`,
-
-      "Punaise verte": `🐛 **Punaise verte**
-Insecte herbivore des jardins et cultures.
-Très commune, parfois considérée comme nuisible.`,
-
-      "Mite des vêtements": `🦋 **Mite des vêtements**
-Petit papillon dont la larve mange les textiles.
-Très commune dans les habitations.`,
-
-      "Perce-oreille": `🦗 **Perce-oreille**
-Insecte aux pinces caractéristiques, omnivore.
-Très commun, non menacé.`,
-
-      "Loup": `🐺 **Loup**
-Mammifère carnivore, prédateur apex.
-Population en récupération, non insecte.`,
-
-      "Renard": `🦊 **Renard**
-Mammifère omnivore adaptable.
-Population stable, non insecte.`,
-
-      "Chat": `🐱 **Chat**
-Mammifère domestique, prédateur d'oiseaux et petits animaux.
-Très commun, non insecte.`,
-
-      "Chien": `🐶 **Chien**
-Mammifère domestique, compagnon de l'homme.
-Très commun, non insecte.`,
-
-      "Pigeon": `🐦 **Pigeon**
-Oiseau urbain très adaptable.
-Très commun en ville, non insecte.`
+      "Mélibée": `**Mélibée**\n- Papillon bleu des montagnes avec de petites taches noires.\n- Elle aide les fleurs à grandir en transportant le pollen.\n- Son habitat disparaît quand les prairies sont coupées.\n**Pour aider** : Plante des fleurs sauvages et demande à un adulte d'éviter de couper l'herbe trop court.`,
+      "Vanesse des pariétaires": `**Vanesse des pariétaires**\n- Papillon aux ailes découpées qui vit près des vieux murs.\n- Sa chenille mange une plante appelée pariétaire.\n- Elle est menacée quand on enlève cette plante.\n**Pour aider** : Laisse pousser la pariétaire dans un coin calme et évite les produits chimiques là-bas.`,
+      "Agrion bleuissant": `**Agrion bleuissant**\n- Petite libellule bleue qui vole près de l'eau claire.\n- Elle mange les moustiques et aide à garder l'eau propre.\n- Elle disparaît si l'eau est polluée.\n**Pour aider** : Crée un petit bassin sans pesticide et plante des plantes près du bord pour filtrer l'eau.`,
+      "Cordulie splendide": `**Cordulie splendide**\n- Libellule verte brillante que l'on voit voler près des étangs.\n- Elle attrape les insectes nuisibles comme les moustiques.\n- Elle est sensible à la lumière artificielle la nuit.\n**Pour aider** : Baisse les lumières la nuit et laisse les zones humides tranquilles.`,
+      "Serratella mesoleuca": `**Serratella mesoleuca**\n- Éphémère qui naît dans l'eau et vit quelques heures en adulte.\n- C'est un repas important pour les poissons et les oiseaux.\n- Elle meurt si les berges sont bétonnées.\n**Pour aider** : Garde les berges naturelles avec des plantes et évite les travaux lourds au bord de l'eau.`,
+      "Halictus carinthiacus": `**Halictus carinthiacus**\n- Petite abeille solitaire qui niche dans le sol.\n- Elle pollinise des fleurs que l'abeille domestique ne visite pas.\n- Elle est menacée par le piétinement des prairies.\n**Pour aider** : Crée un petit espace de sol non piétiné et plante des fleurs sauvages.`,
+      "Bourdon velouté": `**Bourdon velouté**\n- Gros insecte poilu qui butine de nombreuses fleurs.\n- Il aide à produire des fruits et légumes.\n- Les pesticides le rendent malade.\n**Pour aider** : Laisse un coin de ton jardin en fleurs et n'utilise pas de produits chimiques.`,
+      "Criquet de la Crau": `**Criquet de la Crau**\n- Créature unique d'une plaine sèche en France.\n- Il vit dans un habitat très rare qu'il partage avec peu d'autres animaux.\n- Il disparaît si on construit ou cultive partout.\n**Pour aider** : Soutiens la protection de ces pelouses sèches et ne cueille pas les plantes là-bas.`,
+      "Phasme du palmiste rouge": `**Phasme du palmiste rouge**\n- Insecte long vert qui ressemble à une brindille.\n- Il vit dans les forêts de La Réunion sur un palmier spécial.\n- Il est en danger si la forêt est abîmée.\n**Pour aider** : Informe-toi sur la forêt tropicale et soutiens les projets de reforestation.`,
+      "Dendrobias maxillosus": `**Dendrobias maxillosus**\n- Scarabée brillant qui vit dans le bois mort.\n- Il aide à recycler les troncs en nutriments pour la terre.\n- Il disparaît si on enlève tout le bois mort.\n**Pour aider** : Laisse quelques branches sèches dans la forêt et protège les vieux arbres.`,
+      // Décoys simples
+      "Mouche domestique": `**Mouche domestique**\n- Insecte commun qui aime les maisons.\n- Elle aide à décomposer les déchets.`,
+      "Fourmi noire": `**Fourmi noire**\n- Vit en grande colonie sous terre.\n- Elle aide à aérer le sol en creusant des tunnels.`,
+      "Papillon commun": `**Papillon commun**\n- Ailes blanches fréquemment vues dans les jardins.\n- Il butine parfois les fleurs.`,
+      "Abeille domestique": `**Abeille domestique**\n- Vit dans des ruches tenues par les apiculteurs.\n- Elle produit du miel et pollinise les cultures.`,
+      "Sauterelle verte": `**Sauterelle verte**\n- Insecte qui saute haut dans les prairies.\n- Elle mange des plantes, sans danger pour elles.`,
+      "Scarabée commun": `**Scarabée commun**\n- Vit dans les feuilles mortes et le compost.\n- Il aide à recycler la matière organique.`,
+      "Coccinelle à sept points": `**Coccinelle**\n- Petite bête rouge avec des points noirs.\n- Elle mange des pucerons qui mangent les plantes.`,
+      "Termite des forêts": `**Termite des forêts**\n- Petit insecte social qui décompose le bois mort.\n- Il n'abîme pas les maisons quand il est dans la forêt.`,
+      "Grillon champêtre": `**Grillon champêtre**\n- Orthoptère qui chante dans les champs.\n- Il vit près des herbes hautes.`,
+      "Larve de coccinelle": `**Larve de coccinelle**\n- Jeune coccinelle qui mange beaucoup de pucerons.\n- Elle devient coccinelle adulte après une métamorphose.`,
+      "Cicadelle": `**Cicadelle**\n- Petit insecte qui saute et boit de la sève.\n- On le trouve souvent sur les feuilles.`,
+      "Lucane cerf-volant": `**Lucane cerf-volant**\n- Grand coléoptère aux mâchoires imposantes.\n- Il vit dans les vieux arbres et le bois mort.`,
+      "Punaise verte": `**Punaise verte**\n- Insecte qui suce la sève des plantes.\n- Elle est souvent vue sur les feuilles.`,
+      "Mite des vêtements": `**Mite des vêtements**\n- Petite larve qui peut abîmer les tissus.\n- Elle n'a pas de rôle de pollinisateur.`,
+      "Perce-oreille": `**Perce-oreille**\n- Insecte aux pinces à l'arrière du corps.\n- Il mange des petits insectes et des déchets.`,
+      "Loup": `**Loup**\n- Grand mammifère carnivore qui vit en meute.\n- Il n'est pas un insecte mais un super chasseur.`,
+      "Renard": `**Renard**\n- Mammifère rusé qui vit près des forêts et des champs.\n- Il se nourrit de petits animaux et de fruits.`,
+      "Chat": `**Chat**\n- Félin domestique et chasseur de petits rongeurs.\n- Il n'aide pas aux fleurs mais protège la maison des insectes.`,
+      "Chien": `**Chien**\n- Meilleur ami de l'homme, omnivore et protecteur.\n- Il ne vole pas mais garde la maison en sécurité.`,
+      "Pigeon": `**Pigeon**\n- Oiseau urbain très adaptable.\n- Il picore les graines et aide à disperser certaines plantes.`
     };
-
-    // === CONFIGURATION DU JEU ===
-    const gameConfig = {
-      facile: { choices: 4, rounds: 5 },
-      moyen: { choices: 6, rounds: 7 },
-      difficile: { choices: 8, rounds: 10 }
-    };
-
-    // Variables de jeu
-    let score = 0;
-    let correctStreak = 0;
-    let wrongStreak = 0;
-    let currentRound = 0;
-    let totalRounds = 0;
-    let currentLevel = '';
-    let usedEndangered = [];
-    let roundAnswered = false; // Protection contre les clics multiples
-
+    const intrusList = [
+      "Mélibée","Vanesse des pariétaires","Agrion bleuissant","Cordulie splendide","Serratella mesoleuca",
+      "Halictus carinthiacus","Bourdon velouté","Criquet de la Crau","Phasme du palmiste rouge","Dendrobias maxillosus"
+    ];
+    const decoys = [
+      "Chauve-souris frugivore","Colibri",
+      "Mouche domestique","Fourmi noire","Papillon commun","Abeille domestique","Sauterelle verte",
+      "Scarabée commun","Coccinelle à sept points","Termite des forêts","Grillon champêtre",
+      "Larve de coccinelle","Cicadelle","Lucane cerf-volant","Punaise verte","Mite des vêtements","Perce-oreille",
+      "Loup","Renard","Chat","Chien","Pigeon"
+    ];
+    const levels = {
+      facile: intrusList.slice(0,5),
+      moyen: intrusList.slice(5,10),
+      difficile: intrusList.slice(2,7)
+    }; 
+    let score = 0, correctStreak = 0, wrongStreak = 0, currentLevel = [], currentStep = 0;
     const scoreDisplay = document.getElementById('scoreDisplay');
     const infoDiv = document.getElementById('info');
     const levelButtons = document.getElementById('level-buttons');
-    const messageDiv = document.getElementById('message');
-    const gameArea = document.getElementById('gameArea');
-    const nextButton = document.getElementById('nextButton');
-
-    // === FONCTIONS UTILITAIRES ===
-    function shuffle(arr) {
-      return arr.sort(() => Math.random() - 0.5);
-    }
-
-    function getImagePath(speciesName) {
-      // Mapping direct pour éviter les erreurs de normalisation
-      const imageMapping = {
-        // Espèces menacées
-        "Mélibée": "melibee.jpg",
-        "Vanesse des pariétaires": "vanesse-des-parietaires.jpg", 
-        "Agrion bleuissant": "agrion-bleuissant.jpg",
-        "Cordulie splendide": "cordulie-splendide.jpg",
-        "Serratella mesoleuca": "serratella-mesoleuca.jpg",
-        "Halictus carinthiacus": "halictus-carinthiacus.jpg",
-        "Bourdon velouté": "bourdon-veloute.jpg",
-        "Criquet de la Crau": "criquet-de-la-crau.jpg",
-        "Phasme du palmiste rouge": "phasme-du-palmiste-rouge.jpg",
-        "Dendrobias maxillosus": "dendrobias-maxillosus.jpg",
-        
-        // Espèces communes
-        "Chauve-souris frugivore": "chauve-souris-frugivore.jpg",
-        "Colibri": "colibri.jpg",
-        "Mouche domestique": "mouche-domestique.jpg",
-        "Fourmi noire": "fourmi-noire.jpg",
-        "Papillon commun": "papillon-commun.jpg",
-        "Abeille domestique": "abeille-domestique.jpg",
-        "Sauterelle verte": "sauterelle-verte.jpg",
-        "Scarabée commun": "scarabee-commun.jpg",
-        "Coccinelle à sept point": "coccinelle-a-sept-point.jpg",
-        "Termite des forêts": "termite-des-forets.jpg",
-        "Grillon champêtre": "grillon-champetre.jpg",
-        "Larve de coccinelle": "larve-de-coccinelle.jpg",
-        "Cicadelle": "cicadelle.jpg",
-        "Lucane cerf volant": "lucane-cerf-volant.jpg",
-        "Punaise verte": "punaise-verte.jpg",
-        "Mite des vêtements": "mite-des-vetements.jpg",
-        "Perce-oreille": "perce-oreille.jpg",
-        "Loup": "loup.jpg",
-        "Renard": "renard.jpg",
-        "Chat": "chat.jpg",
-        "Chien": "chien.jpg",
-        "Pigeon": "pigeon.jpg"
-      };
-      
-      // Retourner le nom de fichier exact ou un fallback
-      const fileName = imageMapping[speciesName];
-      if (fileName) {
-        return `images/${fileName}`;
-      }
-      
-      // Fallback avec normalisation si pas trouvé dans le mapping
-      const normalizedName = speciesName
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/é/g, 'e')
-        .replace(/è/g, 'e')  
-        .replace(/à/g, 'a')
-        .replace(/ç/g, 'c')
-        .replace(/ô/g, 'o')
-        .replace(/'/g, '')
-        .replace(/[^a-z0-9\-]/g, '');
-      
-      return `images/${normalizedName}.jpg`;
-    }
-
-    // === DÉMARRAGE DU JEU ===
     function startGame(level) {
-      currentLevel = level;
-      currentRound = 0;
-      score = 0;
-      correctStreak = 0;
-      wrongStreak = 0;
-      usedEndangered = [];
-      
-      totalRounds = gameConfig[level].rounds;
-      
-      levelButtons.style.display = 'none';
-      scoreDisplay.style.display = 'block';
-      updateScore();
-      infoDiv.innerHTML = '';
-      
-      showRound();
+      currentLevel = levels[level]; currentStep = 0; score = 0; correctStreak = 0; wrongStreak = 0;
+      levelButtons.style.display = 'none'; scoreDisplay.style.display = 'block'; updateScore(); infoDiv.textContent = '';
+      showStep();
     }
-
-    // === AFFICHAGE D'UNE MANCHE ===
-    function showRound() {
-      roundAnswered = false; // Reset du flag pour la nouvelle manche
-      infoDiv.innerHTML = '';
-      nextButton.style.display = 'none';
-      messageDiv.textContent = `Manche ${currentRound + 1}/${totalRounds}`;
-      messageDiv.className = 'message';
-      
-      // Choisir un intrus qui n'a pas encore été utilisé
-      const availableEndangered = endangeredSpecies.filter(species => !usedEndangered.includes(species));
-      if (availableEndangered.length === 0) {
-        // Si tous ont été utilisés, on recommence la liste
-        usedEndangered = [];
-      }
-      
-      const intrus = availableEndangered[Math.floor(Math.random() * availableEndangered.length)];
-      usedEndangered.push(intrus);
-      
-      // Choisir les décoys
-      const nbChoices = gameConfig[currentLevel].choices;
-      const choices = shuffle(commonSpecies).slice(0, nbChoices - 1);
-      
-      // Mélanger tous les éléments
+    function showStep() {
+      infoDiv.textContent = ''; document.getElementById('message').textContent = '';
+      const intrus = currentLevel[currentStep];
+      const choices = shuffle(decoys).slice(0,4);
       const items = shuffle([...choices, intrus]);
-      
-      // Appliquer la classe CSS correspondante
-      gameArea.className = `game-area choices-${nbChoices}`;
-      
-      // Afficher les cartes
-      gameArea.innerHTML = '';
-      items.forEach((item, index) => {
-        const div = document.createElement('div');
-        div.className = 'item';
-        div.style.animationDelay = `${index * 0.05}s`;
-        
-        // Container pour l'image
-        const imgContainer = document.createElement('div');
-        imgContainer.style.flex = '1';
-        imgContainer.style.display = 'flex';
-        imgContainer.style.alignItems = 'center';
-        imgContainer.style.justifyContent = 'center';
-        imgContainer.style.height = '70%'; // Limiter la hauteur pour laisser place au nom
-        
-        // Image
-        const img = document.createElement('img');
-        img.src = getImagePath(item);
-        img.alt = item;
-        img.onerror = function() {
-          // Si .jpg ne marche pas, essayer .png
-          const normalizedName = item
-            .toLowerCase()
-            .replace(/\s+/g, '-')
-            .replace(/é/g, 'e')
-            .replace(/è/g, 'e')
-            .replace(/à/g, 'a')
-            .replace(/ç/g, 'c')
-            .replace(/ô/g, 'o')
-            .replace(/'/g, '')
-            .replace(/[^a-z0-9\-]/g, '');
-          const pngPath = `images/${normalizedName}.png`;
-          if (this.src !== pngPath) {
-            this.src = pngPath;
-          } else {
-            // Si aucun format ne marche, afficher le placeholder
-            imgContainer.innerHTML = `<div style="text-align:center; font-size:0.8em; color:#666;">📷<br>Image manquante</div>`;
-          }
-        };
-        imgContainer.appendChild(img);
-        
-        // Nom de l'espèce
-        const nameDiv = document.createElement('div');
-        nameDiv.className = 'item-name';
-        nameDiv.textContent = item;
-        nameDiv.style.height = '30%'; // Hauteur fixe pour le nom
-        nameDiv.style.display = 'flex';
-        nameDiv.style.alignItems = 'center';
-        nameDiv.style.justifyContent = 'center';
-        
-        div.appendChild(imgContainer);
-        div.appendChild(nameDiv);
+      const gameArea = document.getElementById('gameArea'); gameArea.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div'); div.className = 'item';
+        const icon = document.createElement('img');
+        icon.src = `images/icons/${item.replace(/\s+/g,'_')}.png`;
+        icon.alt = item; div.appendChild(icon);
         div.onclick = () => handleClick(item, intrus);
         gameArea.appendChild(div);
       });
     }
-
-    // === GESTION DU CLIC ===
     function handleClick(item, intrus) {
-      // Protection contre les clics multiples
-      if (roundAnswered) return;
-      
-      roundAnswered = true;
-      
-      // Désactiver tous les boutons
-      const allItems = document.querySelectorAll('.item');
-      allItems.forEach(itemEl => {
-        itemEl.style.pointerEvents = 'none';
-        itemEl.style.opacity = '0.7';
-      });
-      
-      // Afficher les informations sur l'espèce
-      const detailImg = `<img src="${getImagePath(item)}" alt="${item}">`;
-      const textContent = `<div class="info-text">${definitions[item]}</div>`;
-      infoDiv.innerHTML = detailImg + textContent;
-      
+      const msg = document.getElementById('message');
+      infoDiv.innerHTML = `<img src="images/details/${item.replace(/\s+/g,'_')}.png" alt="${item}" style="width:100%;border-radius:8px;margin-bottom:10px;">` + definitions[item];
       if (item === intrus) {
-        // Bonne réponse !
-        wrongStreak = 0;
-        correctStreak++;
-        const bonus = 10 + correctStreak * 2; // 12, 14, 16...
+        wrongStreak = 0; correctStreak++;
+        const bonus = 4 + correctStreak;
         score += bonus;
-        messageDiv.textContent = `✅ Bravo ! Espèce protégée : ${item} (+${bonus} pts)`;
-        messageDiv.className = 'message success';
-        
-        currentRound++;
-        updateScore();
-        
-        // Afficher le bouton suivant ou finir
-        if (currentRound < totalRounds) {
-          nextButton.style.display = 'block';
-        } else {
-          setTimeout(() => {
-            finishGame();
-          }, 2000);
-        }
-        
+        msg.textContent = `✅ Bravo ! Intrus protégé : ${item} (+${bonus} pts)`;
+        msg.style.color = '#27ae60'; currentStep++; updateScore();
+        setTimeout(() => currentStep < currentLevel.length ? showStep() : finishGame(), 1000);
       } else {
-        // Mauvaise réponse
-        correctStreak = 0;
-        wrongStreak++;
-        const penalty = wrongStreak * 3;
-        score = Math.max(0, score - penalty);
-        messageDiv.textContent = `❌ ${item} n'est pas une espèce à protéger (-${penalty} pts)`;
-        messageDiv.className = 'message error';
-        updateScore();
-        
-        // Afficher le bouton suivant pour continuer
-        nextButton.style.display = 'block';
+        correctStreak = 0; wrongStreak++;
+        score = Math.max(0, score - wrongStreak);
+        msg.textContent = `❌ ${item} n'est pas une espèce à protéger (−${wrongStreak} pts)`;
+        msg.style.color = '#c0392b'; updateScore();
       }
     }
-
-    // === FONCTION POUR PASSER À LA MANCHE SUIVANTE ===
-    function nextRound() {
-      if (currentRound < totalRounds) {
-        showRound();
-      } else {
-        finishGame();
-      }
-    }
-
-    // === FIN DE PARTIE ===
     function finishGame() {
-      gameArea.innerHTML = '';
-      nextButton.style.display = 'none';
-      
-      let performance = '';
-      if (score >= totalRounds * 10) performance = '🏆 Excellent !';
-      else if (score >= totalRounds * 7) performance = '🥇 Très bien !';
-      else if (score >= totalRounds * 5) performance = '🥈 Bien !';
-      else performance = '🥉 À améliorer !';
-      
-      messageDiv.innerHTML = `
-        <div style="font-size: 1.2em; margin-bottom: 8px;">${performance}</div>
-        <div>Score final : ${score} points</div>
-        <div style="font-size: 0.85em; margin-top: 8px;">
-          Merci d'avoir joué pour la protection de la biodiversité !
-        </div>
-      `;
-      messageDiv.className = 'message success';
-      
-      infoDiv.innerHTML = '';
-      levelButtons.style.display = 'flex';
-      scoreDisplay.style.display = 'none';
+      document.getElementById('gameArea').innerHTML = '';
+      document.getElementById('message').textContent = `🎉 Score final : ${score} points.`;
+      infoDiv.textContent = ''; levelButtons.style.display = 'block';
     }
-
-    // === MISE À JOUR DU SCORE ===
-    function updateScore() {
-      scoreDisplay.textContent = `Score : ${score}`;
-    }
+    function updateScore() { scoreDisplay.textContent = `Score : ${score}`; }
+    function shuffle(arr) { return arr.sort(() => Math.random() - 0.5); }
   </script>
 </body>
 </html>
+
+
