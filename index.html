@@ -557,11 +557,6 @@ Gérée par l'apiculture, non sauvage.`,
 Orthoptère herbivore des prairies et jardins.
 Commune partout, très adaptable.`,
 
-    // Je dois aussi ajouter "Sauterelle verte" qui était manquante dans les définitions
-      "Sauterelle verte": `🦗 **Sauterelle verte**
-Orthoptère herbivore des prairies et jardins.
-Commune partout, très adaptable.`,
-
       "Scarabée commun": `🪲 **Scarabée commun**
 Coléoptère décomposeur, recycle la matière organique.
 Population stable, pas de menace particulière.`,
@@ -653,17 +648,62 @@ Très commun en ville, non insecte.`
     }
 
     function getImagePath(speciesName) {
-      // Normaliser le nom pour les fichiers web-friendly
+      // Mapping direct pour éviter les erreurs de normalisation
+      const imageMapping = {
+        // Espèces menacées
+        "Mélibée": "melibee.jpg",
+        "Vanesse des pariétaires": "vanesse-des-parietaires.jpg", 
+        "Agrion bleuissant": "agrion-bleuissant.jpg",
+        "Cordulie splendide": "cordulie-splendide.jpg",
+        "Serratella mesoleuca": "serratella-mesoleuca.jpg",
+        "Halictus carinthiacus": "halictus-carinthiacus.jpg",
+        "Bourdon velouté": "bourdon-veloute.jpg",
+        "Criquet de la Crau": "criquet-de-la-crau.jpg",
+        "Phasme du palmiste rouge": "phasme-du-palmiste-rouge.jpg",
+        "Dendrobias maxillosus": "dendrobias-maxillosus.jpg",
+        
+        // Espèces communes
+        "Chauve-souris frugivore": "chauve-souris-frugivore.jpg",
+        "Colibri": "colibri.jpg",
+        "Mouche domestique": "mouche-domestique.jpg",
+        "Fourmi noire": "fourmi-noire.jpg",
+        "Papillon commun": "papillon-commun.jpg",
+        "Abeille domestique": "abeille-domestique.jpg",
+        "Sauterelle verte": "sauterelle-verte.jpg",
+        "Scarabée commun": "scarabee-commun.jpg",
+        "Coccinelle à sept point": "coccinelle-a-sept-point.jpg",
+        "Termite des forêts": "termite-des-forets.jpg",
+        "Grillon champêtre": "grillon-champetre.jpg",
+        "Larve de coccinelle": "larve-de-coccinelle.jpg",
+        "Cicadelle": "cicadelle.jpg",
+        "Lucane cerf volant": "lucane-cerf-volant.jpg",
+        "Punaise verte": "punaise-verte.jpg",
+        "Mite des vêtements": "mite-des-vetements.jpg",
+        "Perce-oreille": "perce-oreille.jpg",
+        "Loup": "loup.jpg",
+        "Renard": "renard.jpg",
+        "Chat": "chat.jpg",
+        "Chien": "chien.jpg",
+        "Pigeon": "pigeon.jpg"
+      };
+      
+      // Retourner le nom de fichier exact ou un fallback
+      const fileName = imageMapping[speciesName];
+      if (fileName) {
+        return `images/${fileName}`;
+      }
+      
+      // Fallback avec normalisation si pas trouvé dans le mapping
       const normalizedName = speciesName
         .toLowerCase()
-        .replace(/\s+/g, '-')          // Espaces -> tirets
-        .replace(/é/g, 'e')            // é -> e
-        .replace(/è/g, 'e')            // è -> e  
-        .replace(/à/g, 'a')            // à -> a
-        .replace(/ç/g, 'c')            // ç -> c
-        .replace(/ô/g, 'o')            // ô -> o
-        .replace(/'/g, '')             // Supprimer apostrophes
-        .replace(/[^a-z0-9\-]/g, '');  // Supprimer autres caractères spéciaux
+        .replace(/\s+/g, '-')
+        .replace(/é/g, 'e')
+        .replace(/è/g, 'e')  
+        .replace(/à/g, 'a')
+        .replace(/ç/g, 'c')
+        .replace(/ô/g, 'o')
+        .replace(/'/g, '')
+        .replace(/[^a-z0-9\-]/g, '');
       
       return `images/${normalizedName}.jpg`;
     }
